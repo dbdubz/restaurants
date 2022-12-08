@@ -88,7 +88,7 @@ def restaurants_index(req):
 
         restaurants = restaurants.order_by('restaurant_name', 'restaurant_street')
     
-    styles = RestaurantStyle.objects.all()
+    styles = RestaurantStyle.objects.all().order_by('restaurant_style', 'restaurant_type')
 
     context = {
         'restaurants': restaurants,
