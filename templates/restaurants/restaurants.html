@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block pageTitle %}
+<title>Restaurants</title>
+{% endblock %}
+{% block pageCSS %}
+<link href="{% static 'css/edit.css' %}" rel="stylesheet">
+{% endblock%}
+{% block navigation %}
+<!--Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container px-5">
+            <a class="navbar-brand" href="#!"></a> <!--Top left button if you want it -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'all_restaurants' %}">Restaurants</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'add_form' %}">Add</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'update_form' %}">Edit</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'delete_form' %}">Delete</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+{% block content %}
+<!-- Header-->
+<header class="bg-dark py-5">
+    <div class="container px-5">
+        <div class="row gx-5 justify-content-center">
+            <div class="col-lg-6">
+                <div class="text-center my-5">
+                    <h1 class="display-5 fw-bolder text-white mb-2">Restaurants</h1>
+                    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- Features section-->
+<section class="py-5 border-bottom" id="features">
+    <center>
+        <form name="restaurant_preferences" method="get" action="{% url 'all_restaurants' %}">
+            <div>
+                <label class="fw-bolder" for="restaurant_type_style">Available Restaurant Type and Style</label><br>
+                <select type="text" name="restaurant_type_style" id="restaurant_type_style">
+                    <option value="all" selected>All restaurants</option>
+                    {% for t in type_styles %}
+                    <option value="{{t.id}}">{{t.restaurant_style}} - {{t.restaurant_type}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <br>
+            <button style="background-color: black; color: white;" type="submit">Submit</button>
+        </form>
+        <br><hr><br>
+        {% for ts in selected %}
+        <h3>Showing results for <span style="text-decoration: underline">{{ts}}</span> restaurants in our database...</h3>
+        {% endfor %}
+        <br>
+        <table>
+            <tbody>
+            {% for r in restaurants%}
+                <tr>
+                    <td style="padding-right: 10px"><h5>{{r.restaurant_name}} - {{r.restaurant_street}}</h5></td>
+                    <td>
+                        <form name="delete_individual" method="get" action="{% url 'edit_form' %}">
+                            <input type="number" name="rest_id" value="{{r.id}}" hidden>
+                            {% for ts in selected %}
+                            <input type="number" name="restaurant_type_style" value="{{ts.id}}" hidden>
+                            {% endfor %}
+                            <input type="text" name="to_do" value="edit" hidden>
+                            <button style="background-color: black; color: white; width: 60px;" type="submit">Edit</button>
+                        </form>
+                    </td>                    
+                    <td>
+                        <form name="delete_individual" method="post" action="{% url 'all_restaurants' %}">
+                            {% csrf_token %}
+                            <input type="number" name="rest_id" value="{{r.id}}" hidden>
+                            {% for ts in selected %}
+                            <input type="number" name="restaurant_type_style" value="{{ts.id}}" hidden>
+                            {% endfor %}
+                            <input type="text" name="to_do" value="delete" hidden>
+                            <button style="background-color: black; color: white; width: 60px;" type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </center>
+</section>
+{% endblock %}

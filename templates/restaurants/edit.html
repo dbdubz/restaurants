@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block pageTitle %}
+<title>Update Restaurant (FORM)</title>
+{% endblock %}
+{% block pageCSS %}
+<link href="{% static 'css/edit.css' %}" rel="stylesheet">
+{% endblock%}
+{% block navigation %}
+<!--Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container px-5">
+            <a class="navbar-brand" href="#!"></a> <!--Top left button if you want it -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'all_restaurants' %}">Restaurants</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'add_form' %}">Add</a></li>
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'update_form' %}">Edit</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'delete_form' %}">Delete</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+{% block content %}
+<!-- Header-->
+    <header class="bg-dark py-5">
+        <div class="container px-5">
+            <div class="row gx-5 justify-content-center">
+                <div class="col-lg-6">
+                    <div class="text-center my-5">
+                        <h1 class="display-5 fw-bolder text-white mb-2">Edit a Restaurant</h1>
+                        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+<!-- Form section with action= url 'restaurant_update' -->
+    <section class="py-5 border-bottom" id="features">
+        <center>
+            <form name="update_form" id="update_form" method="post" action="{% url 'edit_form' %}">    
+                {% csrf_token %}
+                <div>
+                    <div id="update_select">
+                        <div>
+                            <h3 class="fw-bolder" name="heading">What do you want to update for {{restaurant.restaurant_name}}?</h3><br>
+                            <select type="dropdown" name="to_update" id="to_update" onchange="Set_Selection(this)">
+                                <option value="" disabled selected hidden>What to update</option>
+                                <option value="update_restaurant_name">Restaurant Name</option>
+                                <option value="update_restaurant_street">Street Address</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+                <h5 id="selection"></h5>
+                <div id="basic_info" class="d-none">
+                    <input name='rest_id' id='rest_id' value="{{restaurant.id}}" hidden>
+                    <div class="d-none" id="update_name" name="update_name">
+                        <div id="name">
+                            <label class="fw-bolder" for="restaurant_name">New Restaurant Name (Required)</label><br>
+                            <input type="text" name="restaurant_name" id="restaurant_name">
+                        </div>
+                    </div>
+                    <div class="d-none" id="update_street" name="update_street">
+                        <div id="street">
+                            <label class="fw-bolder" for="restaurant_street">New Street Address (Required)</label><br>
+                            <input type="text" name="restaurant_street" id="restaurant_street">
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <button style="background-color: black; color: white;" class="d-none" id="submit" name="submit" type="submit">Submit</button>
+            </form>
+        <center>
+    </section>
+    <script>
+        function Set_Selection(that) { 
+            var selected = that.value 
+            var selection = document.getElementById("selection")
+            document.getElementById("basic_info").classList.remove("d-none")           
+            document.getElementById("submit").classList.remove("d-none")
+
+            if (selected == "update_restaurant_name") {
+                selection.innerHTML = "Please provide this info to change a restaurant's name..."
+                document.getElementById("update_name").classList.remove("d-none")
+                document.getElementById("update_street").classList.add("d-none")
+                document.getElementById("restaurant_street").value = "1234567890"
+                document.getElementById("restaurant_name").value = ""
+            } else if (selected == "update_restaurant_street") {
+                selection.innerHTML = "Please provide this info to change a restaurant's address..."
+                document.getElementById("update_name").classList.add("d-none")
+                document.getElementById("update_street").classList.remove("d-none")
+                document.getElementById("restaurant_name").value = "1234567890"
+                document.getElementById("restaurant_street").value = ""
+            } 
+        }
+    </script>
+{% endblock %}

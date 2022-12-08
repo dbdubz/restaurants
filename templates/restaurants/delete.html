@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block pageTitle %}
+<title>Delete Restaurant (FORM)</title>
+{% endblock %}
+{% block pageCSS %}
+<link href="{% static 'css/edit.css' %}" rel="stylesheet">
+{% endblock%}
+{% block navigation %}
+<!--Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container px-5">
+            <a class="navbar-brand" href="#!"></a> <!--Top left button if you want it -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'all_restaurants' %}">Restaurants</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'add_form' %}">Add</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'update_form' %}">Edit</a></li>
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'delete_form' %}">Delete</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+{% block content %}
+    <!-- Header-->
+    <header class="bg-dark py-5">
+        <div class="container px-5">
+            <div class="row gx-5 justify-content-center">
+                <div class="col-lg-6">
+                    <div class="text-center my-5">
+                        <h1 class="display-5 fw-bolder text-white mb-2">Delete a Restaurant</h1>
+                        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Form section with action= url 'restaurant_delete' -->
+    <section class="py-5 border-bottom" id="features">
+        <center>
+            <form name="delete_form" method="post" action="{% url 'delete_form' %}">
+                {% csrf_token %}
+                <div>
+                    <div id="delete_select">
+                        <div>
+                            <h3 class="fw-bolder">What do you want to delete?</h3><br>
+                            <select type="dropdown" name="to_delete" id="to_delete" onchange="Set_Selection(this)">
+                                <option value="" disabled selected hidden>What to delete</option>
+                                <option value="all">Restaurant Chain</option>
+                                <option value="individual">Individual Restaurant</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+                <h5 id="delete_selection"></h5>
+                <div>
+                    <div id="del_all" class="d-none">
+                        <label class="fw-bolder" for="rest_name">Restaurant Name (Required)</label><br>
+                        <select name="rest_name" id="rest_name" onchange="Set_Restaurant()">
+                            <option value="" disabled selected hidden>Select the restaurant</option>
+                            {% for dr in distinct_restaurants %}
+                            <option value="{{dr.restaurant_name}}">{{dr.restaurant_name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div id="del_one" class="d-none">
+                        <label class="fw-bolder" for="rest_id">Restaurant Name (Required)</label><br>
+                        <select name="rest_id" id="rest_id" onchange="Set_Restaurant()">
+                            <option value="" disabled selected hidden>Select the restaurant</option>
+                            {% for r in restaurants %}
+                            <option value="{{r.id}}">{{r.restaurant_name}} - {{r.restaurant_street}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <br>
+                <button style="background-color: black; color: white;" class="d-none" id="del_submit" name="del_submit" type="submit">Submit</button>
+            </form>
+        </center>
+    </section>
+    <script>
+        function Set_Selection(that) { 
+            var selected = that.value 
+            
+            document.getElementById("del_submit").classList.remove("d-none")
+
+            if (selected == "all") {
+                document.getElementById("delete_selection").innerHTML = "Tell us which restaurant chain from our collection to delete..."
+                document.getElementById("del_all").classList.remove("d-none")
+                document.getElementById("del_one").classList.add("d-none")
+                document.getElementById("rest_name").setAttribute("required", '')
+                document.getElementById("rest_id").removeAttribute("required")
+            } else if (selected == "individual") {
+                document.getElementById("delete_selection").innerHTML = "Tell us which single restaurant from our collection to delete..."
+                document.getElementById("del_all").classList.add("d-none")
+                document.getElementById("del_one").classList.remove("d-none")
+                document.getElementById("rest_id").setAttribute("required", '')
+                document.getElementById("rest_name").removeAttribute("required")
+            }
+        }
+    </script>
+{% endblock %}
