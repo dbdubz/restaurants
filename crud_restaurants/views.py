@@ -82,9 +82,22 @@ def restaurants_index(req):
             else:
                 filter_style = {'all'}
                 restaurants = Restaurant.objects.all()
+            
+            rest_names = restaurants.distinct('restaurant_name')
         except:
-            filter_style = {'all'}
-            restaurants = Restaurant.objects.all()
+            try:
+                rest = req.GET['rest']
+                if (rest != '' and rest != 'All'):
+                    filter_style = {rest}
+                    restaurants = Restaurant.objects.filter(restaurant_name = rest)
+                else:
+                    filter_style = {'all'}
+                    restaurants = Restaurant.objects.all()
+            except:
+                filter_style = {'all'}
+                restaurants = Restaurant.objects.all()
+
+            rest_names = restaurants.distinct('restaurant_name')
 
         restaurants = restaurants.order_by('restaurant_name', 'restaurant_street')
     
@@ -92,6 +105,7 @@ def restaurants_index(req):
 
     context = {
         'restaurants': restaurants,
+        'rest_names': rest_names,
         'type_styles': styles,
         'selected': filter_style
     }

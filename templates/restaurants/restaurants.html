@@ -44,23 +44,43 @@
 <section class="py-5 border-bottom" id="features">
     <center>
         <form name="restaurant_preferences" method="get" action="{% url 'all_restaurants' %}">
-            <div>
-                <label class="fw-bolder" for="restaurant_type_style">Available Restaurant Type and Style</label><br>
-                <select type="text" name="restaurant_type_style" id="restaurant_type_style">
-                    <option value="all" selected>All restaurants</option>
-                    {% for t in type_styles %}
-                    <option value="{{t.id}}">{{t.restaurant_style}} - {{t.restaurant_type}}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <br>
-            <button style="background-color: black; color: white;" type="submit">Submit</button>
+            <label class="fw-bolder" for="restaurant_type_style">Available Restaurant Type and Style</label><br>
+            <select type="text" name="restaurant_type_style" id="restaurant_type_style">
+                {% for s in selected %}
+                {% if s == 'all' %}
+                <option value="all" selected>All restaurants</option>
+                {% else %}
+                <option value="all">All restaurants</option>
+                {% endif %}
+                {% endfor %}
+                {% for t in type_styles %}
+                {% for s in selected %}
+                {% if t == s %}
+                <option value="{{t.id}}" selected>{{t.restaurant_style}} - {{t.restaurant_type}}</option>
+                {% else %}
+                <option value="{{t.id}}">{{t.restaurant_style}} - {{t.restaurant_type}}</option>
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+            </select>
+            <button style="background-color: black; color: white;" type="submit">Search</button>
         </form>
         <br><hr><br>
         {% for ts in selected %}
         <h3>Showing results for <span style="text-decoration: underline">{{ts}}</span> restaurants in our database...</h3>
         {% endfor %}
         <br>
+        <form name="search" id="search" action="{% url 'all_restaurants' %}">
+            <input type="text" list="site_restaurants" name='rest' id="rest" placeholder="Search for a restaurant">
+            <datalist id="site_restaurants" onselect="this.form.submit()">
+                <option value="All">All</option>
+                {% for r in rest_names %}
+                    <option value="{{r.restaurant_name}}">{{r.restaurant_name}}</option>
+                {% endfor %}
+            </datalist>
+            <button style="background-color: black; color: white;" type="submit">Search</button>
+        </form>
+        <br><br>
         <table>
             <tbody>
             {% for r in restaurants%}
