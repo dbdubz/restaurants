@@ -74,7 +74,7 @@
         <p>If it doesn't exist in the dropdown, add it to our database so it does!</p>
         <form name="search" id="search" action="{% url 'all_restaurants' %}">
             <input type="text" list="site_restaurants" name='rest' id="rest" placeholder="Search for a restaurant">
-            <datalist id="site_restaurants" onselect="this.form.submit()">
+            <datalist id="site_restaurants">
                 <option value="All">All</option>
                 {% for r in rest_names %}
                     <option value="{{r.restaurant_name}}">{{r.restaurant_name}}</option>
@@ -89,7 +89,7 @@
                 <tr>
                     <td style="padding-right: 10px"><h5>{{r.restaurant_name}} - {{r.restaurant_street}}</h5></td>
                     <td>
-                        <form name="delete_individual" method="get" action="{% url 'edit_form' %}">
+                        <form name="edit_individual" method="get" action="{% url 'edit_form' %}">
                             <input type="number" name="rest_id" value="{{r.id}}" hidden>
                             {% for ts in selected %}
                             <input type="number" name="restaurant_type_style" value="{{ts.id}}" hidden>

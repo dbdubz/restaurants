@@ -40,39 +40,24 @@ def delete_form(req):
 
 def restaurants_index(req):
     if (req.method == "POST"):
-        if (req.POST.get('to_do') == 'delete'):
-            rest_del = Restaurant.objects.get(id=req.POST.get('rest_id'))
-            rest_del.delete()
-            
-            try:
-                rest_ts = req.POST.get['restaurant_type_style']
-                if (rest_ts != 'all'):
-                    filter_style = RestaurantStyle.objects.filter(id=rest_ts)
-                    restaurants = Restaurant.objects.filter(restaurant_type_style = rest_ts)
-                else:
-                    filter_style = {'all'}
-                    restaurants = Restaurant.objects.all()
-            except:
+        x_del = req.POST.get('rest_id')
+        rest_del = Restaurant.objects.get(id=x_del)
+        rest_del.delete()
+        
+        try:
+            rest_ts = req.POST.get['restaurant_type_style']
+            if (rest_ts != 'all'):
+                filter_style = RestaurantStyle.objects.filter(id=rest_ts)
+                restaurants = Restaurant.objects.filter(restaurant_type_style = rest_ts)
+            else:
                 filter_style = {'all'}
                 restaurants = Restaurant.objects.all()
-            
-            restaurants = restaurants.order_by('restaurant_name', 'restaurant_street')
-        else:
-            rest_del = Restaurant.objects.get(id=req.POST.get('rest_id'))
-            rest_del.delete()
-            try:
-                rest_ts = req.POST.get['restaurant_type_style']
-                if (rest_ts != 'all'):
-                    filter_style = RestaurantStyle.objects.filter(id=rest_ts)
-                    restaurants = Restaurant.objects.filter(restaurant_type_style = rest_ts)
-                else:
-                    filter_style = {'all'}
-                    restaurants = Restaurant.objects.all()
-            except:
-                filter_style = {'all'}
-                restaurants = Restaurant.objects.all()
-            
-            restaurants = restaurants.order_by('restaurant_name', 'restaurant_street')
+        except:
+            filter_style = {'all'}
+            restaurants = Restaurant.objects.all()
+        
+        restaurants = restaurants.order_by('restaurant_name', 'restaurant_street')
+        rest_names = restaurants.distinct('restaurant_name')
     else:
         try:
             rest_ts = req.GET['restaurant_type_style']
