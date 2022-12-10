@@ -70,6 +70,8 @@
         <h3>Showing results for <span style="text-decoration: underline">{{ts}}</span> restaurants in our database...</h3>
         {% endfor %}
         <br>
+        <p>Search for a restaurant! Please note that submitting this search is case sensitive, so select an option from the list as you filter it to see the restaurants.</p>
+        <p>If it doesn't exist in the dropdown, add it to our database so it does!</p>
         <form name="search" id="search" action="{% url 'all_restaurants' %}">
             <input type="text" list="site_restaurants" name='rest' id="rest" placeholder="Search for a restaurant">
             <datalist id="site_restaurants" onselect="this.form.submit()">
